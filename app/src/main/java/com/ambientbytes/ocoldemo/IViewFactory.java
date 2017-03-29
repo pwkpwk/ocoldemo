@@ -37,5 +37,5 @@ public interface IViewFactory {
      * @param view view created earlier by createView.
      * @param typeId identifier of the type of the view returned earlier for the view model by getViewTypeId.
      */
-    void unbindView(View view, int typeId);
+    void unbindView(View view, int typeId, Object viewModel);
 }

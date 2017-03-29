@@ -15,14 +15,11 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DemoApplication app = (DemoApplication)getApplicationContext();
         ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        binding.setVm(new MainViewModel(getModel()));
-    }
-
-    private MainModel getModel() {
-        if (model == null) {
-            model = new MainModel();
-        }
-        return model;
+        //
+        // Obtain the main model from the application object that has composwed it.
+        //
+        binding.setVm(new MainViewModel(app.getMainModel()));
     }
 }

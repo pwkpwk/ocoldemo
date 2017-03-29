@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">ocoldemo</string>
-    <string name="add_button_text">Add</string>
-    <string name="clear_button_text">Clear</string>
+    <string name="add_young_robot_button_text">+YR</string>
+    <string name="add_young_human_button_text">+YH</string>
+    <string name="add_old_robot_button_text">+OR</string>
+    <string name="add_old_human_button_text">+OH</string>
+    <string name="clear_robots_button_text">-R</string>
+    <string name="clear_humans_button_text">-H</string>
     <string name="reorder_button_text">Reorder</string>
 </resources>

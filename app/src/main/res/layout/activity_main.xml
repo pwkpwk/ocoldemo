@@ -9,12 +9,11 @@
         <variable name="vm" type="com.ambientbytes.ocoldemo.viewmodels.MainViewModel"/>
     </data>
 
-    <GridLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:columnCount="1"
-        android:rowCount="2">
+        android:weightSum="1">
 
         <LinearLayout
             android:id="@+id/buttons_panel"
@@ -22,50 +21,91 @@
             android:layout_height="wrap_content">
 
             <Button
-                style="@android:style/Widget.DeviceDefault.Button.Borderless"
+                style="@android:style/Widget.DeviceDefault.Button.Borderless.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="@{()->vm.add()}"
-                android:text="@string/add_button_text" />
+                android:onClick="@{()->vm.addYoungRobot()}"
+                android:text="@string/add_young_robot_button_text" />
 
             <Button
-                style="@android:style/Widget.DeviceDefault.Button.Borderless"
+                style="@android:style/Widget.DeviceDefault.Button.Borderless.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="@{()->vm.clear()}"
-                android:text="@string/clear_button_text" />
+                android:onClick="@{()->vm.addOldRobot()}"
+                android:text="@string/add_old_robot_button_text" />
 
             <Button
-                style="@android:style/Widget.DeviceDefault.Button.Borderless"
+                style="@android:style/Widget.DeviceDefault.Button.Borderless.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="@{()->vm.changeOrder()}"
-                android:text="@string/reorder_button_text" />
+                android:onClick="@{()->vm.addYoungHuman()}"
+                android:text="@string/add_young_human_button_text" />
+
+            <Button
+                style="@android:style/Widget.DeviceDefault.Button.Borderless.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{()->vm.addOldHuman()}"
+                android:text="@string/add_old_human_button_text" />
+
+            <Button
+                style="@android:style/Widget.DeviceDefault.Button.Borderless.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{()->vm.clearRobots()}"
+                android:text="@string/clear_robots_button_text" />
+
+            <Button
+                style="@android:style/Widget.DeviceDefault.Button.Borderless.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{()->vm.clearHumans()}"
+                android:text="@string/clear_humans_button_text" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="start|end|fill_vertical">
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:layout_gravity="fill_vertical">
 
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                app:itemsSource="@{vm.data}"
+                app:viewFactory="@{ViewFactories.getMainViewFactory()}">
+            </android.support.v7.widget.RecyclerView>
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:itemsSource="@{vm.data}"
-                    app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-                    app:viewFactory="@{ViewFactories.getMainViewFactory()}">
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                app:itemsSource="@{vm.youngRobots}"
+                app:viewFactory="@{ViewFactories.getMainViewFactory()}">
+            </android.support.v7.widget.RecyclerView>
 
-                </android.support.v7.widget.RecyclerView>
-            </ScrollView>
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                app:itemsSource="@{vm.oldHumans}"
+                app:viewFactory="@{ViewFactories.getMainViewFactory()}">
+            </android.support.v7.widget.RecyclerView>
 
         </LinearLayout>
 
-    </GridLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Don Pedro"/>
+        </LinearLayout>
+
+    </LinearLayout>
 
 </layout>

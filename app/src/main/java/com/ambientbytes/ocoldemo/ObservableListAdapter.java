@@ -8,9 +8,9 @@ import com.ambientbytes.observables.IListObserver;
 import com.ambientbytes.observables.IReadOnlyObservableList;
 
 /**
- * Created by pakarpen on 3/28/17.
+ * Universal adapter that binds an observable list to a RecyclerView
+ * @Author Pavel Karpenko
  */
-
 public class ObservableListAdapter<T> extends RecyclerView.Adapter {
 
     private final class Observer implements IListObserver {
@@ -32,7 +32,19 @@ public class ObservableListAdapter<T> extends RecyclerView.Adapter {
         }
 
         @Override public void moved(int oldStartIndex, int newStartIndex, int count) {
-            //notifyItemRange
+            if (count == 1) {
+                notifyItemMoved(oldStartIndex, newStartIndex);
+            } else {
+                //
+                // RecyclerView does not support moves or ranges, so we simply update the entire range of items
+                // affected by the reported move.
+                //
+                if (oldStartIndex < newStartIndex) {
+                    notifyItemRangeChanged(oldStartIndex, newStartIndex + count - oldStartIndex);
+                } else {
+                    notifyItemRangeChanged(newStartIndex, oldStartIndex + count - newStartIndex);
+                }
+            }
         }
 
         @Override public void resetting() {}
@@ -42,9 +54,23 @@ public class ObservableListAdapter<T> extends RecyclerView.Adapter {
         }
     }
 
-    private final static class MyViewHolder extends RecyclerView.ViewHolder {
-        public MyViewHolder(View itemView) {
+    private final static class ViewHolder extends RecyclerView.ViewHolder {
+
+        private Object viewModel;
+
+        public ViewHolder(View itemView) {
             super(itemView);
+            viewModel = null;
+        }
+
+        void attachViewModel(Object viewModel) {
+            this.viewModel = viewModel;
+        }
+
+        Object detachViewModel() {
+            Object vm = viewModel;
+            viewModel = null;
+            return vm;
         }
 
     }
@@ -52,10 +78,6 @@ public class ObservableListAdapter<T> extends RecyclerView.Adapter {
     private final IViewFactory viewFactory;
     private final IReadOnlyObservableList<T> observableList;
     private final IListObserver listObserver;
-
-    public static RecyclerView.Adapter createAdapterForList(Object list, IViewFactory viewFactory) {
-        return new ObservableListAdapter((IReadOnlyObservableList)list, viewFactory);
-    }
 
     public ObservableListAdapter(IReadOnlyObservableList<T> observableList, IViewFactory viewFactory) {
         this.viewFactory = viewFactory;
@@ -66,7 +88,7 @@ public class ObservableListAdapter<T> extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = viewFactory.createView(parent, viewType);
-        return new MyViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
@@ -76,8 +98,11 @@ public class ObservableListAdapter<T> extends RecyclerView.Adapter {
 
     @Override
     public void onViewRecycled(RecyclerView.ViewHolder holder) {
+        ViewHolder vh = (ViewHolder) holder;
+
+        viewFactory.unbindView(holder.itemView, holder.getItemViewType(), vh.detachViewModel());
+
         super.onViewRecycled(holder);
-        viewFactory.unbindView(holder.itemView, holder.getItemViewType());
     }
 
     @Override

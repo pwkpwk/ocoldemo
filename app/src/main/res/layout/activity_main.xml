@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="com.ambientbytes.ocoldemo.ViewFactories" />
         <variable name="vm" type="com.ambientbytes.ocoldemo.viewmodels.MainViewModel"/>
     </data>
 
@@ -21,38 +22,41 @@
             android:layout_height="wrap_content">
 
             <Button
+                style="@android:style/Widget.DeviceDefault.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add Item"
-                android:onClick="@{()->vm.add()}"/>
+                android:onClick="@{()->vm.add()}"
+                android:text="@string/add_button_text" />
 
             <Button
+                style="@android:style/Widget.DeviceDefault.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Clear"
-                android:onClick="@{()->vm.clear()}"/>
+                android:onClick="@{()->vm.clear()}"
+                android:text="@string/clear_button_text" />
 
             <Button
+                style="@android:style/Widget.DeviceDefault.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reorder"
-                android:onClick="@{()->vm.changeOrder()}"/>
+                android:onClick="@{()->vm.changeOrder()}"
+                android:text="@string/reorder_button_text" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|end|fill_vertical">
 
             <android.support.v7.widget.RecyclerView
-                android:padding="8dp"
+                android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:padding="8dp"
                 app:itemsSource="@{vm.data}"
-                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-                app:viewFactory="@{null}">
+                app:layoutManager="android.support.v7.widget.StaggeredGridLayoutManager"
+                app:viewFactory="@{ViewFactories.getMainViewFactory()}">
 
             </android.support.v7.widget.RecyclerView>
 

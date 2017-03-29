@@ -26,6 +26,6 @@ public class BindingAdapters {
             IReadOnlyObservableList<TItem> newItems,
             IViewFactory newFactory
     ) {
-        view.setAdapter(ObservableListAdapter.createAdapterForList(newItems));
+        view.setAdapter(ObservableListAdapter.createAdapterForList(newItems, newFactory));
     }
 }

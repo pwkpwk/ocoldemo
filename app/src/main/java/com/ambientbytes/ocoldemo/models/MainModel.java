@@ -17,7 +17,7 @@ public final class MainModel {
     private final ReadWriteLock lock;
     private final ObservableList<Integer> primaryData;
     private final OrderedObservableList<Integer> orderedData;
-    private int lastValue;
+    private int nextValue;
 
     private final static IItemsOrder<Integer> directOrder = new IItemsOrder<Integer>() {
         @Override
@@ -37,7 +37,7 @@ public final class MainModel {
         this.lock = new ReentrantReadWriteLock();
         this.primaryData = ObservableCollections.createObservableList(this.lock);
         this.orderedData = ObservableCollections.createOrderedObservableList(this.primaryData.list(), reverseOrder, this.lock);
-        this.lastValue = 1;
+        this.nextValue = 1;
     }
 
     public IReadOnlyObservableList<Integer> data() {
@@ -49,7 +49,7 @@ public final class MainModel {
     }
 
     public void add() {
-        primaryData.mutator().add(Integer.valueOf(++lastValue));
+        primaryData.mutator().add(Integer.valueOf(nextValue++));
     }
 
     public void reorder() {

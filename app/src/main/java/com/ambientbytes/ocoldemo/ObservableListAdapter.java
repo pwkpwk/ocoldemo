@@ -3,7 +3,6 @@ package com.ambientbytes.ocoldemo;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.ambientbytes.observables.IListObserver;
 import com.ambientbytes.observables.IReadOnlyObservableList;
@@ -50,27 +49,35 @@ public class ObservableListAdapter<T> extends RecyclerView.Adapter {
 
     }
 
+    private final IViewFactory viewFactory;
     private final IReadOnlyObservableList<T> observableList;
     private final IListObserver listObserver;
 
-    public static RecyclerView.Adapter createAdapterForList(Object list) {
-        return new ObservableListAdapter((IReadOnlyObservableList)list);
+    public static RecyclerView.Adapter createAdapterForList(Object list, IViewFactory viewFactory) {
+        return new ObservableListAdapter((IReadOnlyObservableList)list, viewFactory);
     }
 
-    public ObservableListAdapter(IReadOnlyObservableList<T> observableList) {
+    public ObservableListAdapter(IReadOnlyObservableList<T> observableList, IViewFactory viewFactory) {
+        this.viewFactory = viewFactory;
         this.observableList = observableList;
         this.listObserver = new Observer();
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        TextView view = new TextView(parent.getContext());
+        View view = viewFactory.createView(parent, viewType);
         return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((TextView)holder.itemView).setText(observableList.getAt(position).toString());
+        viewFactory.bindView(holder.itemView, holder.getItemViewType(), observableList.getAt(position));
+    }
+
+    @Override
+    public void onViewRecycled(RecyclerView.ViewHolder holder) {
+        super.onViewRecycled(holder);
+        viewFactory.unbindView(holder.itemView, holder.getItemViewType());
     }
 
     @Override
@@ -88,5 +95,10 @@ public class ObservableListAdapter<T> extends RecyclerView.Adapter {
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
         observableList.removeObserver(listObserver);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return viewFactory.getViewTypeId(observableList.getAt(position));
     }
 }

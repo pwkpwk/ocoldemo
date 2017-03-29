@@ -8,12 +8,15 @@ import com.ambientbytes.observables.IAction;
 import com.ambientbytes.observables.IDispatcher;
 import com.ambientbytes.observables.IItemFilter;
 import com.ambientbytes.observables.IItemMapper;
+import com.ambientbytes.observables.IItemsOrder;
 import com.ambientbytes.observables.IReadOnlyObservableList;
 import com.ambientbytes.observables.ObservableCollections;
 import com.ambientbytes.ocoldemo.models.HumanModel;
 import com.ambientbytes.ocoldemo.models.IModel;
 import com.ambientbytes.ocoldemo.models.MainModel;
 import com.ambientbytes.ocoldemo.models.RobotModel;
+
+import java.util.concurrent.locks.ReadWriteLock;
 
 /**
  * Created by pakarpen on 3/28/17.
@@ -23,7 +26,7 @@ public class MainViewModel extends BaseObservable {
 
     private final Handler handler;
     private final MainModel model;
-    private final IReadOnlyObservableList<WorkerViewModel> mappedModels;
+    private final IReadOnlyObservableList<IModel> linkToModel;
     private final IReadOnlyObservableList<WorkerViewModel> data;
     private final IReadOnlyObservableList<WorkerViewModel> youngRobots;
     private final IReadOnlyObservableList<WorkerViewModel> oldHumans;
@@ -39,6 +42,19 @@ public class MainViewModel extends BaseObservable {
         @Override
         public boolean isIn(IModel item) {
             return item instanceof HumanModel && item.getAge() >= 18;
+        }
+    };
+
+    private static IItemsOrder<IModel> order = new IItemsOrder<IModel>() {
+        @Override
+        public boolean isLess(IModel lesser, IModel greater) {
+            boolean isLess = lesser.getAge() > greater.getAge();
+
+            if (!isLess && lesser.getAge() == greater.getAge()) {
+                isLess = lesser.getName().compareTo(greater.getName()) < 0;
+            }
+
+            return isLess;
         }
     };
 
@@ -70,17 +86,12 @@ public class MainViewModel extends BaseObservable {
 
         this.handler = new Handler();
         this.model = model;
+        this.linkToModel = ObservableCollections.createOrderedObservableList(model.everyone(), order, model.lock()).list();
+        IReadOnlyObservableList<WorkerViewModel> mapped = ObservableCollections.createMappingObservableList(this.linkToModel, mapper);
+        this.data = ObservableCollections.createDispatchingObservableList(mapped, dispatcher, model.lock());
 
-        this.mappedModels = ObservableCollections.createMappingObservableList(model.everyone(), mapper);
-        this.data = ObservableCollections.createDispatchingObservableList(this.mappedModels, dispatcher, model.lock());
-
-        IReadOnlyObservableList<IModel> filteredModels = ObservableCollections.createFilteredObservableList(model.everyone(), youngRobotsFilter, model.lock()).list();
-        IReadOnlyObservableList<WorkerViewModel> mappedViewModels = ObservableCollections.createMappingObservableList(filteredModels, mapper);
-        this.youngRobots = ObservableCollections.createDispatchingObservableList(mappedViewModels, dispatcher, model.lock());
-
-        filteredModels = ObservableCollections.createFilteredObservableList(model.everyone(), oldHumansFilter, model.lock()).list();
-        mappedViewModels = ObservableCollections.createMappingObservableList(filteredModels, mapper);
-        this.oldHumans = ObservableCollections.createDispatchingObservableList(mappedViewModels, dispatcher, model.lock());
+        this.youngRobots = createFilteredDispatchingList(model.everyone(), youngRobotsFilter, mapper, dispatcher, model.lock());
+        this.oldHumans = createFilteredDispatchingList(model.everyone(), oldHumansFilter, mapper, dispatcher, model.lock());
     }
 
     @Bindable
@@ -120,5 +131,19 @@ public class MainViewModel extends BaseObservable {
 
     public void clearHumans() {
         model.clearHumans();
+    }
+
+    private static IReadOnlyObservableList<WorkerViewModel> createFilteredDispatchingList(
+            IReadOnlyObservableList<IModel> source,
+            IItemFilter<IModel> filter,
+            IItemMapper<IModel, WorkerViewModel> mapper,
+            IDispatcher dispatcher,
+            ReadWriteLock lock) {
+
+        IReadOnlyObservableList<IModel> filteredModels = ObservableCollections.createFilteredObservableList(source, filter, lock).list();
+        IReadOnlyObservableList<IModel> orderedModels = ObservableCollections.createOrderedObservableList(filteredModels, order, lock).list();
+        IReadOnlyObservableList<WorkerViewModel> mappedViewModels = ObservableCollections.createMappingObservableList(orderedModels, mapper);
+
+        return ObservableCollections.createDispatchingObservableList(mappedViewModels, dispatcher, lock);
     }
 }

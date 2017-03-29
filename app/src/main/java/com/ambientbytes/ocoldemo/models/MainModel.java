@@ -1,7 +1,7 @@
 package com.ambientbytes.ocoldemo.models;
 
 import com.ambientbytes.observables.IReadOnlyObservableList;
-import com.ambientbytes.observables.MergingObservableList;
+import com.ambientbytes.observables.MergingList;
 import com.ambientbytes.observables.ObservableCollections;
 import com.ambientbytes.observables.ObservableList;
 
@@ -21,7 +21,7 @@ public final class MainModel {
     private final ThreadPoolExecutor threadPool;
     private final ObservableList<IModel> humans;
     private final ObservableList<IModel> robots;
-    private final MergingObservableList<IModel> everyone;
+    private final MergingList<IModel> everyone;
 
     public MainModel() {
         this.lock = new ReentrantReadWriteLock();
@@ -45,7 +45,7 @@ public final class MainModel {
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
-                robots.mutator().add(new RobotModel(random.nextInt(18), "Robot " + Integer.toString(random.nextInt())));
+                robots.mutator().add(new RobotModel(random.nextInt(18), "Robot " + Integer.toString(random.nextInt(1024*1024))));
             }
         });
     }

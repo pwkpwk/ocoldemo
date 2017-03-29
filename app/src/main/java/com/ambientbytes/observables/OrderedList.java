@@ -4,11 +4,11 @@ package com.ambientbytes.observables;
  * @Author Pavel Karpenko
  */
 
-public final class OrderedObservableList<T> implements IObservableListContainer<T> {
+public final class OrderedList<T> implements IObservableListContainer<T> {
 
     private final OrderingReadOnlyObservableList<T> list;
 
-    OrderedObservableList(OrderingReadOnlyObservableList<T> list) {
+    OrderedList(OrderingReadOnlyObservableList<T> list) {
         this.list = list;
     }
 

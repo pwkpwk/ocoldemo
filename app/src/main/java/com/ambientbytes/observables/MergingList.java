@@ -6,11 +6,11 @@ import java.util.concurrent.locks.ReadWriteLock;
  * @Author Pavel Karpenko
  */
 
-public final class MergingObservableList<T> implements IObservableListContainer<T> {
+public final class MergingList<T> implements IObservableListContainer<T> {
 
     private final MergingReadOnlyObservableList<T> list;
 
-    public MergingObservableList(ReadWriteLock lock) {
+    public MergingList(ReadWriteLock lock) {
         this.list = new MergingReadOnlyObservableList<>(lock);
     }
 

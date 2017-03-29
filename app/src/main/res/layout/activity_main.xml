@@ -71,29 +71,68 @@
             android:orientation="horizontal"
             android:layout_gravity="fill_vertical">
 
-            <android.support.v7.widget.RecyclerView
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-                app:itemsSource="@{vm.data}"
-                app:viewFactory="@{ViewFactories.getMainViewFactory()}">
-            </android.support.v7.widget.RecyclerView>
+                android:layout_height="wrap_content">
 
-            <android.support.v7.widget.RecyclerView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-                app:itemsSource="@{vm.youngRobots}"
-                app:viewFactory="@{ViewFactories.getMainViewFactory()}">
-            </android.support.v7.widget.RecyclerView>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Everybody"
+                    android:layout_gravity="center"
+                    android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+                <android.support.v7.widget.RecyclerView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                    app:itemsSource="@{vm.data}"
+                    app:viewFactory="@{ViewFactories.getMainViewFactory()}">
+                </android.support.v7.widget.RecyclerView>
+            </LinearLayout>
 
-            <android.support.v7.widget.RecyclerView
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-                app:itemsSource="@{vm.oldHumans}"
-                app:viewFactory="@{ViewFactories.getMainViewFactory()}">
-            </android.support.v7.widget.RecyclerView>
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Young Robots"
+                    android:layout_gravity="center"
+                    android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+                <android.support.v7.widget.RecyclerView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                    app:itemsSource="@{vm.youngRobots}"
+                    app:viewFactory="@{ViewFactories.getMainViewFactory()}">
+                </android.support.v7.widget.RecyclerView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Old Humans"
+                    android:layout_gravity="center"
+                    android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+                <android.support.v7.widget.RecyclerView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                    app:itemsSource="@{vm.oldHumans}"
+                    app:viewFactory="@{ViewFactories.getMainViewFactory()}">
+                </android.support.v7.widget.RecyclerView>
+            </LinearLayout>
 
         </LinearLayout>
 

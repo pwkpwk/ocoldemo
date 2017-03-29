@@ -1,0 +1,108 @@
+package com.ambientbytes.observables;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.locks.ReadWriteLock;
+
+final class ListObservers<T> implements IListObserver {
+	
+	private final ReadWriteLock lock;
+	private final Set<IListObserver> observers;
+	
+	public ListObservers(final ReadWriteLock lock) {
+		this.lock = lock;
+		this.observers = new HashSet<IListObserver>();
+	}
+	
+	public void add(IListObserver observer) {
+		final IResource l = LockTool.acquireWriteLock(lock);
+		
+		try {
+			if (!observers.add(observer)) {
+				throw new IllegalStateException("Duplicate list observer");
+			}
+		} finally {
+			l.release();
+		}
+	}
+	
+	public void remove(IListObserver observer) {
+		final IResource l = LockTool.acquireWriteLock(lock);
+		
+		try {
+			observers.remove(observer);
+		} finally {
+			l.release();
+		}
+	}
+
+	@Override
+	public void added(int startIndex, int count) {
+		for (IListObserver observer : makeInvocationList()) {
+			observer.added(startIndex, count);
+		}
+	}
+	
+	@Override
+	public void changing(int startIndex, int count) {
+		for (IListObserver observer : makeInvocationList()) {
+			observer.changing(startIndex, count);
+		}
+	}
+	
+	@Override
+	public void changed(int startIndex, int count) {
+		for (IListObserver observer : makeInvocationList()) {
+			observer.changed(startIndex, count);
+		}
+	}
+	
+	@Override
+	public void removing(int startIndex, int count) {
+		for (IListObserver observer : makeInvocationList()) {
+			observer.removing(startIndex, count);
+		}
+	}
+
+	@Override
+	public void removed(int startIndex, int count) {
+		for (IListObserver observer : makeInvocationList()) {
+			observer.removed(startIndex, count);
+		}
+	}
+
+	@Override
+	public void moved(int oldStartIndex, int newStartIndex, int count) {
+		for (IListObserver observer : makeInvocationList()) {
+			observer.moved(oldStartIndex, newStartIndex, count);
+		}
+	}
+
+	@Override
+	public void resetting() {
+		for (IListObserver observer : makeInvocationList()) {
+			observer.resetting();
+		}
+	}
+
+	@Override
+	public void reset() {
+		for (IListObserver observer : makeInvocationList()) {
+			observer.reset();
+		}
+	}
+	
+	private Iterable<IListObserver> makeInvocationList() {
+		Iterable<IListObserver> iterable;
+		final IResource l = LockTool.acquireReadLock(lock);
+		
+		try {
+			iterable = new ArrayList<IListObserver>(observers);
+		} finally {
+			l.release();
+		}
+		
+		return iterable;
+	}
+}

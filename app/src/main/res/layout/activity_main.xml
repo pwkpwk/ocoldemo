@@ -49,16 +49,20 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start|end|fill_vertical">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_view"
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="8dp"
-                app:itemsSource="@{vm.data}"
-                app:layoutManager="android.support.v7.widget.StaggeredGridLayoutManager"
-                app:viewFactory="@{ViewFactories.getMainViewFactory()}">
+                android:layout_height="match_parent">
 
-            </android.support.v7.widget.RecyclerView>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:itemsSource="@{vm.data}"
+                    app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                    app:viewFactory="@{ViewFactories.getMainViewFactory()}">
+
+                </android.support.v7.widget.RecyclerView>
+            </ScrollView>
 
         </LinearLayout>
 

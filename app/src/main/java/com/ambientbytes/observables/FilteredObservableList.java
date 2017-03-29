@@ -6,7 +6,7 @@ import java.util.concurrent.locks.ReadWriteLock;
  * Created by pakarpen on 3/29/17.
  */
 
-public final class FilteredObservableList<T> {
+public final class FilteredObservableList<T> implements IObservableListContainer<T> {
 
     private final FilteringReadOnlyObservableList<T> list;
 
@@ -14,6 +14,7 @@ public final class FilteredObservableList<T> {
         this.list = new FilteringReadOnlyObservableList<>(source, filter, lock);
     }
 
+    @Override
     public IReadOnlyObservableList<T> list() {
         return list;
     }

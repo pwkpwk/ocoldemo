@@ -22,9 +22,9 @@ public class BindingAdapters {
     public static <TItem> void setItemsSource(
             RecyclerView view,
             IReadOnlyObservableList<TItem> oldItems,
-            IViewFactory oldFactory,
+            IViewHolderFactory oldFactory,
             IReadOnlyObservableList<TItem> newItems,
-            IViewFactory newFactory) {
+            IViewHolderFactory newFactory) {
         view.setAdapter(new ObservableListAdapter(newItems, newFactory));
     }
 }

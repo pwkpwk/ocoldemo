@@ -1,13 +1,13 @@
 package com.ambientbytes.ocoldemo;
 
-import android.view.View;
+import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
 /**
  * @Author Pavel Karpenko
  */
 
-public interface IViewFactory {
+public interface IViewHolderFactory<VM> {
     /**
      * Return a unique identifier of the view type that presents instances of the specified view model.
      * Returned identifier will be later passed to createView.
@@ -22,20 +22,20 @@ public interface IViewFactory {
      * @param typeId identifier of the view type returned earlier by getViewTypeId.
      * @return anew view included in the specified group.
      */
-    View createView(ViewGroup parent, int typeId);
+    RecyclerView.ViewHolder createViewHolder(ViewGroup parent, int typeId);
 
     /**
      * Attach a view model to a view.
-     * @param view view created earlier by createView.
+     * @param viewHolder view holder created earlier by createViewHolder.
      * @param typeId identifier of the type of the view returned earlier for the view model by getViewTypeId.
      * @param viewModel view model for the type of which the view had been created.
      */
-    void bindView(View view, int typeId, Object viewModel);
+    void bind(RecyclerView.ViewHolder viewHolder, int typeId, VM viewModel);
 
     /**
      * Detach a view model from a view.
-     * @param view view created earlier by createView.
+     * @param viewHolder view holder created earlier by createViewHolder.
      * @param typeId identifier of the type of the view returned earlier for the view model by getViewTypeId.
      */
-    void unbindView(View view, int typeId, Object viewModel);
+    void unbind(RecyclerView.ViewHolder viewHolder, int typeId);
 }

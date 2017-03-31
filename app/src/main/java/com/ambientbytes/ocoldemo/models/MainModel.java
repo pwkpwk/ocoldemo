@@ -12,7 +12,8 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * Created by pakarpen on 3/28/17.
+ * Model of the main activity.
+ * @Author Pavel Karpenko
  */
 
 public final class MainModel {
@@ -45,7 +46,7 @@ public final class MainModel {
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
-                robots.mutator().add(new RobotModel(random.nextInt(18), "Robot " + Integer.toString(random.nextInt(1024*1024))));
+                robots.mutator().add(new RobotModel(random.nextInt(18), "Robot " + Integer.toString(random.nextInt(1024 * 4))));
             }
         });
     }
@@ -54,7 +55,7 @@ public final class MainModel {
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
-                robots.mutator().add(new RobotModel(18 + random.nextInt(200), "Robot " + Integer.toString(random.nextInt())));
+                robots.mutator().add(new RobotModel(18 + random.nextInt(200), "Robot " + Integer.toString(random.nextInt(1024 * 4))));
             }
         });
     }

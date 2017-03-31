@@ -1,64 +1,154 @@
 package com.ambientbytes.ocoldemo;
 
-import android.graphics.Color;
-import android.view.View;
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
+import com.ambientbytes.ocoldemo.databinding.HumanViewBinding;
+import com.ambientbytes.ocoldemo.databinding.RobotViewBinding;
 import com.ambientbytes.ocoldemo.viewmodels.HumanViewModel;
 import com.ambientbytes.ocoldemo.viewmodels.RobotViewModel;
 import com.ambientbytes.ocoldemo.viewmodels.WorkerViewModel;
 
 /**
- * Created by pakarpen on 3/28/17.
+ * View holders factory for "workers" objects - humans and robots.
+ * The factory inflates one of the two layouts and binds them to the view models passed
+ * by ObservableListAdapter that does not know anything about particular vies and view holders.
+ * For each type oif a view model the factory creates a view holder of its own type - RobotViewHolder
+ * for RobotViewModel objects and HumanViewHolder for HumanViewModel objects.
+ * @Author Pavel Karpenko
  */
 
-public final class MainViewFactory implements IViewFactory {
+public final class MainViewFactory implements IViewHolderFactory<WorkerViewModel> {
+
+    private static final int HUMAN = R.layout.human_view;
+    private static final int ROBOT = R.layout.robot_view;
+
+    private static final class RobotViewHolder extends RecyclerView.ViewHolder {
+
+        private final RobotViewBinding binding;
+
+        public RobotViewHolder(RobotViewBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+        }
+
+        public void bind(RobotViewModel robot) {
+            binding.setVm(robot);
+            binding.executePendingBindings();
+        }
+
+        public void unbind() {
+            //
+            // do nothing; a real-life view holder can tell the view model to disconnect from the model
+            //
+        }
+    }
+
+    private static final class HumanViewHolder extends RecyclerView.ViewHolder {
+
+        private final HumanViewBinding binding;
+
+        public HumanViewHolder(HumanViewBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+        }
+
+        public void bind(HumanViewModel human) {
+            binding.setVm(human);
+            binding.executePendingBindings();
+        }
+
+        public void unbind() {
+            //
+            // do nothing; a real-life view holder can tell the view model to disconnect from the model
+            //
+        }
+    }
 
     @Override
     public int getViewTypeId(Object viewModel) {
         int id = -1;
 
         if (viewModel instanceof RobotViewModel) {
-            id = 0;
+            id = ROBOT;
         } else if (viewModel instanceof HumanViewModel) {
-            id = 1;
+            id = HUMAN;
         }
 
         return id;
     }
 
     @Override
-    public View createView(ViewGroup parent, int typeId) {
+    public RecyclerView.ViewHolder createViewHolder(ViewGroup parent, int typeId) {
 
-        TextView tv = new TextView(parent.getContext());
+        RecyclerView.ViewHolder vh = null;
+        ViewDataBinding binding = null;
 
         switch (typeId) {
-            case 0: // robot
-                tv.setBackgroundColor(Color.YELLOW);
+            case ROBOT:
+                vh = new RobotViewHolder(createRobotBinding(parent));
                 break;
 
-            case 1: // human
-                tv.setBackgroundColor(Color.GREEN);
+            case HUMAN:
+                vh = new HumanViewHolder(createHumanBinding(parent));
                 break;
         }
 
-        tv.setPadding(8, 8, 8, 8);
-
-        return tv;
+        return vh;
     }
 
     @Override
-    public void bindView(View view, int typeId, Object viewModel) {
-        TextView tv = (TextView) view;
+    public void bind(RecyclerView.ViewHolder holder, int typeId, WorkerViewModel viewModel) {
+        switch (typeId) {
+            case ROBOT:
+                bindRobot((RobotViewHolder)holder, (RobotViewModel)viewModel);
+                break;
 
-        WorkerViewModel vm = (WorkerViewModel)viewModel;
-
-        tv.setText(vm.getName() + '/' + Integer.toString(vm.getAge()));
+            case HUMAN:
+                bindHuman((HumanViewHolder)holder, (HumanViewModel)viewModel);
+                break;
+        }
     }
 
     @Override
-    public void unbindView(View view, int typeId, Object viewModel) {
-        // do nothing
+    public void unbind(RecyclerView.ViewHolder holder, int typeId) {
+        switch (typeId) {
+            case ROBOT:
+                unbindRobot((RobotViewHolder)holder);
+                break;
+
+            case HUMAN:
+                unbindHuman((HumanViewHolder)holder);
+                break;
+        }
+    }
+
+    private static RobotViewBinding createRobotBinding(ViewGroup parent) {
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        return DataBindingUtil.inflate(layoutInflater, R.layout.robot_view, parent, false);
+    }
+
+    private static HumanViewBinding createHumanBinding(ViewGroup parent) {
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        return DataBindingUtil.inflate(layoutInflater, R.layout.human_view, parent, false);
+    }
+
+    private static void bindRobot(RobotViewHolder holder, RobotViewModel robot) {
+        holder.bind(robot);
+    }
+
+    private static void bindHuman(HumanViewHolder holder, HumanViewModel human) {
+        holder.bind(human);
+    }
+
+    private static void unbindRobot(RobotViewHolder robot) {
+        robot.unbind();
+    }
+
+    private static void unbindHuman(HumanViewHolder human) {
+        human.unbind();
     }
 }

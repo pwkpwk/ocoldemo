@@ -5,7 +5,7 @@ package com.ambientbytes.ocoldemo;
  */
 
 public final class ViewFactories {
-    public static IViewFactory getMainViewFactory() {
+    public static IViewHolderFactory getMainViewFactory() {
         return new MainViewFactory();
     }
 }

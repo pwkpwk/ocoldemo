@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ocoldemo</string>
+    <string name="app_name">Observables Demo</string>
     <string name="add_young_robot_button_text">+YR</string>
     <string name="add_young_human_button_text">+YH</string>
     <string name="add_old_robot_button_text">+OR</string>

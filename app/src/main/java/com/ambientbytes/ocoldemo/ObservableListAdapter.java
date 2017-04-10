@@ -8,7 +8,7 @@ import com.ambientbytes.observables.IReadOnlyObservableList;
 
 /**
  * Universal adapter that binds an observable list to a RecyclerView
- * @Author Pavel Karpenko
+ * @author Pavel Karpenko
  */
 public class ObservableListAdapter<T> extends RecyclerView.Adapter {
 

@@ -1,6 +1,6 @@
 package com.ambientbytes.ocoldemo.viewmodels;
 
-import com.ambientbytes.ocoldemo.models.IModel;
+import com.ambientbytes.ocoldemo.models.HumanModel;
 
 /**
  * Created by pakarpen on 3/29/17.
@@ -8,7 +8,7 @@ import com.ambientbytes.ocoldemo.models.IModel;
 
 public final class HumanViewModel extends WorkerViewModel {
 
-    protected HumanViewModel(IModel model) {
+    protected HumanViewModel(HumanModel model) {
         super(model);
     }
 }

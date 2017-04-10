@@ -6,7 +6,7 @@ import com.ambientbytes.ocoldemo.models.MainModel;
 
 /**
  * Custom application object - the composition root of the main model.
- * @Author Pavel Karpenko
+ * @author Pavel Karpenko
  */
 public final class DemoApplication extends Application {
 

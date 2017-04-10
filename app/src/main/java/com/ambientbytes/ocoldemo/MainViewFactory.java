@@ -18,7 +18,7 @@ import com.ambientbytes.ocoldemo.viewmodels.WorkerViewModel;
  * by ObservableListAdapter that does not know anything about particular vies and view holders.
  * For each type oif a view model the factory creates a view holder of its own type - RobotViewHolder
  * for RobotViewModel objects and HumanViewHolder for HumanViewModel objects.
- * @Author Pavel Karpenko
+ * @author Pavel Karpenko
  */
 
 public final class MainViewFactory implements IViewHolderFactory<WorkerViewModel> {

@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
 /**
- * @Author Pavel Karpenko
+ * @author Pavel Karpenko
  */
 
 public interface IViewHolderFactory<VM> {

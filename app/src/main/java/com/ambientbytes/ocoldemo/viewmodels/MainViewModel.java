@@ -11,7 +11,8 @@ import com.ambientbytes.observables.IItemMapper;
 import com.ambientbytes.observables.IItemsOrder;
 import com.ambientbytes.observables.IReadOnlyObservableList;
 import com.ambientbytes.observables.IReadWriteMonitor;
-import com.ambientbytes.observables.ObservableCollections;
+import com.ambientbytes.observables.ImmutableObservableReference;
+import com.ambientbytes.observables.ListBuilder;
 import com.ambientbytes.ocoldemo.models.HumanModel;
 import com.ambientbytes.ocoldemo.models.IModel;
 import com.ambientbytes.ocoldemo.models.MainModel;
@@ -25,7 +26,6 @@ public class MainViewModel extends BaseObservable {
 
     private final Handler handler;
     private final MainModel model;
-    private final IReadOnlyObservableList<IModel> linkToModel;
     private final IReadOnlyObservableList<WorkerViewModel> data;
     private final IReadOnlyObservableList<WorkerViewModel> youngRobots;
     private final IReadOnlyObservableList<WorkerViewModel> oldHumans;
@@ -85,9 +85,11 @@ public class MainViewModel extends BaseObservable {
 
         this.handler = new Handler();
         this.model = model;
-        this.linkToModel = ObservableCollections.createOrderedObservableList(model.everyone(), order, model.monitor()).list();
-        IReadOnlyObservableList<WorkerViewModel> mapped = ObservableCollections.createMappingObservableList(this.linkToModel, mapper, model.monitor());
-        this.data = ObservableCollections.createDispatchingObservableList(mapped, dispatcher, model.monitor());
+        this.data = ListBuilder.source(model.everyone(), model.monitor())
+                .order(new ImmutableObservableReference<IItemsOrder<IModel>>(order))
+                .map(mapper)
+                .dispatch(dispatcher)
+                .build();
 
         this.youngRobots = createFilteredDispatchingList(model.everyone(), youngRobotsFilter, mapper, dispatcher, model.monitor());
         this.oldHumans = createFilteredDispatchingList(model.everyone(), oldHumansFilter, mapper, dispatcher, model.monitor());
@@ -139,10 +141,11 @@ public class MainViewModel extends BaseObservable {
             IDispatcher dispatcher,
             IReadWriteMonitor monitor) {
 
-        IReadOnlyObservableList<IModel> filteredModels = ObservableCollections.createFilteredObservableList(source, filter, monitor).list();
-        IReadOnlyObservableList<IModel> orderedModels = ObservableCollections.createOrderedObservableList(filteredModels, order, monitor).list();
-        IReadOnlyObservableList<WorkerViewModel> mappedViewModels = ObservableCollections.createMappingObservableList(orderedModels, mapper, monitor);
-
-        return ObservableCollections.createDispatchingObservableList(mappedViewModels, dispatcher, monitor);
+        return ListBuilder.source(source, monitor)
+                .filter(new ImmutableObservableReference<IItemFilter<IModel>>(filter))
+                .order(new ImmutableObservableReference<IItemsOrder<IModel>>(order))
+                .map(mapper)
+                .dispatch(dispatcher)
+                .build();
     }
 }

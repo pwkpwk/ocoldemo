@@ -3,23 +3,17 @@ package com.ambientbytes.observables;
 /**
  * Builder of all read-only observable lists.
  * The builder is seeded with the ultimate source creates a chain of collections that observe each other
- * and add transformations that filter, order, 
+ * and add transformations that filter, order or map the source collection.
  * @author Pavel Karpenko
  */
 
 public final class ListBuilder<T> {
 
-    private abstract static class ChainedListBuilder<T> implements IListBuilder<T> {
-        private final IListBuilder<T> source;
+    private abstract static class MonitoredListBuilder<T> implements IListBuilder<T> {
         private final IReadWriteMonitor monitor;
 
-        ChainedListBuilder(IListBuilder<T> source, IReadWriteMonitor monitor) {
-            this.source = source;
+        MonitoredListBuilder(IReadWriteMonitor monitor) {
             this.monitor = monitor;
-        }
-
-        protected final IReadOnlyObservableList<T> buildSource() {
-            return source.build();
         }
 
         protected final IReadWriteMonitor monitor() {
@@ -59,6 +53,20 @@ public final class ListBuilder<T> {
         @Override
         public IReadOnlyObservableList<T> build() {
             return sourceList;
+        }
+    }
+
+    private abstract static class ChainedListBuilder<T> extends MonitoredListBuilder<T> {
+
+        private final IListBuilder<T> source;
+
+        public ChainedListBuilder(IListBuilder<T> source, IReadWriteMonitor monitor) {
+            super(monitor);
+            this.source = source;
+        }
+
+        protected final IReadOnlyObservableList<T> buildSource() {
+            return source.build();
         }
     }
 
@@ -107,41 +115,20 @@ public final class ListBuilder<T> {
         }
     }
 
-    private final static class MappingListBuilder<TSource, TMapped> implements IListBuilder<TMapped> {
+    private final static class MappingListBuilder<TSource, TMapped> extends MonitoredListBuilder<TMapped> {
 
         private final IListBuilder<TSource> source;
-        private final IReadWriteMonitor monitor;
         private final IItemMapper<TSource, TMapped> mapper;
 
         public MappingListBuilder(IListBuilder<TSource> source, IReadWriteMonitor monitor, IItemMapper<TSource, TMapped> mapper) {
+            super(monitor);
             this.source = source;
-            this.monitor = monitor;
             this.mapper = mapper;
         }
 
         @Override
-        public IListBuilder<TMapped> dispatch(IDispatcher dispatcher) {
-            return new DispatchingListBuilder<>(this, monitor, dispatcher);
-        }
-
-        @Override
-        public IListBuilder<TMapped> filter(IObservableReference<IItemFilter<TMapped>> filter) {
-            return new FilteringListBuilder<>(this, monitor, filter);
-        }
-
-        @Override
-        public IListBuilder<TMapped> order(IObservableReference<IItemsOrder<TMapped>> order) {
-            return new OrderingListBuilder<>(this, monitor, order);
-        }
-
-        @Override
-        public <TRemapped> IListBuilder<TRemapped> map(IItemMapper<TMapped, TRemapped> mapper) {
-            return new MappingListBuilder<>(this, monitor, mapper);
-        }
-
-        @Override
         public IReadOnlyObservableList<TMapped> build() {
-            return new MappingReadOnlyObservableList<>(source.build(), mapper, monitor);
+            return new MappingReadOnlyObservableList<>(source.build(), mapper, monitor());
         }
     }
 

@@ -41,9 +41,7 @@ public final class MainViewFactory implements IViewHolderFactory<WorkerViewModel
         }
 
         public void unbind() {
-            //
-            // do nothing; a real-life view holder can tell the view model to disconnect from the model
-            //
+            binding.getVm().unlink();
         }
     }
 
@@ -62,9 +60,7 @@ public final class MainViewFactory implements IViewHolderFactory<WorkerViewModel
         }
 
         public void unbind() {
-            //
-            // do nothing; a real-life view holder can tell the view model to disconnect from the model
-            //
+            binding.getVm().unlink();
         }
     }
 

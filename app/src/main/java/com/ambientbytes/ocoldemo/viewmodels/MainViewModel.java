@@ -11,6 +11,7 @@ import com.ambientbytes.observables.IItemMapper;
 import com.ambientbytes.observables.IItemsOrder;
 import com.ambientbytes.observables.IReadOnlyObservableList;
 import com.ambientbytes.observables.IReadWriteMonitor;
+import com.ambientbytes.observables.ITrigger;
 import com.ambientbytes.observables.ImmutableObservableReference;
 import com.ambientbytes.observables.ListBuilder;
 import com.ambientbytes.ocoldemo.models.HumanModel;
@@ -85,14 +86,14 @@ public class MainViewModel extends BaseObservable {
 
         this.handler = new Handler();
         this.model = model;
-        this.data = ListBuilder.source(model.everyone(), model.monitor())
+        this.data = ListBuilder.<IModel>unlinker(model.unlinker()).source(model.everyone(), model.monitor())
                 .order(new ImmutableObservableReference<IItemsOrder<IModel>>(order))
                 .map(mapper)
                 .dispatch(dispatcher)
                 .build();
 
-        this.youngRobots = createFilteredDispatchingList(model.everyone(), youngRobotsFilter, mapper, dispatcher, model.monitor());
-        this.oldHumans = createFilteredDispatchingList(model.everyone(), oldHumansFilter, mapper, dispatcher, model.monitor());
+        this.youngRobots = createFilteredDispatchingList(model.everyone(), youngRobotsFilter, mapper, dispatcher, model.unlinker(), model.monitor());
+        this.oldHumans = createFilteredDispatchingList(model.everyone(), oldHumansFilter, mapper, dispatcher, model.unlinker(), model.monitor());
     }
 
     @Bindable
@@ -108,6 +109,10 @@ public class MainViewModel extends BaseObservable {
     @Bindable
     public IReadOnlyObservableList<WorkerViewModel> getOldHumans() {
         return oldHumans;
+    }
+
+    public final void unlink() {
+        model.unlinker().trigger();
     }
 
     public void addYoungRobot() {
@@ -139,9 +144,10 @@ public class MainViewModel extends BaseObservable {
             IItemFilter<IModel> filter,
             IItemMapper<IModel, WorkerViewModel> mapper,
             IDispatcher dispatcher,
+            ITrigger unlinker,
             IReadWriteMonitor monitor) {
 
-        return ListBuilder.source(source, monitor)
+        return ListBuilder.<IModel>unlinker(unlinker).source(source, monitor)
                 .filter(new ImmutableObservableReference<IItemFilter<IModel>>(filter))
                 .order(new ImmutableObservableReference<IItemsOrder<IModel>>(order))
                 .map(mapper)

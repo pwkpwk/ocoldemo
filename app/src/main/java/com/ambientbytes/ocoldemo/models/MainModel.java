@@ -38,7 +38,7 @@ public final class MainModel {
         lists.add(this.humans.list());
         lists.add(this.robots.list());
         this.unlinker = new Trigger(monitor);
-        this.everyone = ListBuilder.unlinker(unlinker).merge(lists, monitor).build();
+        this.everyone = ListBuilder.<IModel>unlinker(unlinker).merge(lists, monitor).build();
     }
 
     public IReadWriteMonitor monitor() {

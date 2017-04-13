@@ -1,7 +1,8 @@
 package com.ambientbytes.ocoldemo.models;
 
 /**
- * Created by pakarpen on 3/29/17.
+ * Model of an entity shown in collections of the main view.
+ * @author Pavel Karpenko
  */
 
 public interface IModel {

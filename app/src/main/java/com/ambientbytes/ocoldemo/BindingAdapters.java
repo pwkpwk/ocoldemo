@@ -8,7 +8,8 @@ import android.view.View;
 import com.ambientbytes.observables.IReadOnlyObservableList;
 
 /**
- * Created by pakarpen on 3/28/17.
+ * Collection of binding adapters picked up by the Android Data Binding Library.
+ * @author Pavel Karpenko
  */
 
 public class BindingAdapters {
@@ -22,9 +23,9 @@ public class BindingAdapters {
     public static <TItem> void setItemsSource(
             RecyclerView view,
             IReadOnlyObservableList<TItem> oldItems,
-            IViewHolderFactory oldFactory,
+            IViewHolderFactory<TItem> oldFactory,
             IReadOnlyObservableList<TItem> newItems,
-            IViewHolderFactory newFactory) {
-        view.setAdapter(new ObservableListAdapter(newItems, newFactory));
+            IViewHolderFactory<TItem> newFactory) {
+        view.setAdapter(new ObservableListAdapter<>(newItems, newFactory));
     }
 }

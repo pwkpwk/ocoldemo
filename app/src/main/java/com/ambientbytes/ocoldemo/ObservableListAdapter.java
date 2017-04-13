@@ -56,7 +56,7 @@ public class ObservableListAdapter<T> extends RecyclerView.Adapter {
     private final IReadOnlyObservableList<T> observableList;
     private final IListObserver listObserver;
 
-    public ObservableListAdapter(IReadOnlyObservableList<T> observableList, IViewHolderFactory factory) {
+    public ObservableListAdapter(IReadOnlyObservableList<T> observableList, IViewHolderFactory<T> factory) {
         this.viewHolderFactory = factory;
         this.observableList = observableList;
         this.listObserver = new Observer();

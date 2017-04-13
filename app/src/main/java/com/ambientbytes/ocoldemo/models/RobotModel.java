@@ -1,7 +1,8 @@
 package com.ambientbytes.ocoldemo.models;
 
 /**
- * Created by pakarpen on 3/29/17.
+ * Model of a robot.
+ * @author Pavel Karpenko
  */
 
 public final class RobotModel implements IModel {

@@ -3,7 +3,8 @@ package com.ambientbytes.ocoldemo.viewmodels;
 import com.ambientbytes.ocoldemo.models.RobotModel;
 
 /**
- * Created by pakarpen on 3/29/17.
+ * View model of a robot.
+ * @author Pavel Karpenko
  */
 
 public final class RobotViewModel extends WorkerViewModel {

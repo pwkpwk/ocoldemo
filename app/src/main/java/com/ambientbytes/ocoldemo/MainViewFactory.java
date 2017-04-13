@@ -1,7 +1,6 @@
 package com.ambientbytes.ocoldemo;
 
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -81,7 +80,6 @@ public final class MainViewFactory implements IViewHolderFactory<WorkerViewModel
     public RecyclerView.ViewHolder createViewHolder(ViewGroup parent, int typeId) {
 
         RecyclerView.ViewHolder vh = null;
-        ViewDataBinding binding = null;
 
         switch (typeId) {
             case ROBOT:

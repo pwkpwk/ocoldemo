@@ -1,7 +1,8 @@
 package com.ambientbytes.ocoldemo;
 
 /**
- * Created by pakarpen on 3/28/17.
+ * Collection of view factory objects available in the layout files for attaching to recycler views.
+ * @author Pavel Karpenko
  */
 
 public final class ViewFactories {

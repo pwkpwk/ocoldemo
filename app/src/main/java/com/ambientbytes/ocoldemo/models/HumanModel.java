@@ -3,7 +3,8 @@ package com.ambientbytes.ocoldemo.models;
 import java.util.Random;
 
 /**
- * Created by pakarpen on 3/29/17.
+ * Model of a human.
+ * @author Pavel Karpenko
  */
 
 public final class HumanModel implements IModel {

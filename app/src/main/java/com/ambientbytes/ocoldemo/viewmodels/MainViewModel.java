@@ -20,7 +20,8 @@ import com.ambientbytes.ocoldemo.models.MainModel;
 import com.ambientbytes.ocoldemo.models.RobotModel;
 
 /**
- * Created by pakarpen on 3/28/17.
+ * View model of the main view.
+ * @author Pavel Karpenko
  */
 
 public class MainViewModel extends BaseObservable {

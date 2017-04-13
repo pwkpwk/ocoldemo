@@ -6,12 +6,13 @@ import android.databinding.Bindable;
 import com.ambientbytes.ocoldemo.models.IModel;
 
 /**
- * Created by pakarpen on 3/29/17.
+ * View model of an abstract worker.
+ * @author Pavel Karpenko
  */
 
 public abstract class WorkerViewModel extends BaseObservable {
 
-    IModel model;
+    private IModel model;
 
     protected WorkerViewModel(IModel model) {
         this.model = model;

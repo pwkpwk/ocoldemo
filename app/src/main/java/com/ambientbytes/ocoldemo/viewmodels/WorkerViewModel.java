@@ -12,7 +12,7 @@ import com.ambientbytes.ocoldemo.models.IModel;
 
 public abstract class WorkerViewModel extends BaseObservable {
 
-    private IModel model;
+    private final IModel model;
 
     protected WorkerViewModel(IModel model) {
         this.model = model;

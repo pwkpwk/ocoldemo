@@ -3,10 +3,9 @@ package com.ambientbytes.ocoldemo.models;
 import com.ambientbytes.observables.IReadOnlyObservableList;
 import com.ambientbytes.observables.IReadWriteMonitor;
 import com.ambientbytes.observables.ListBuilder;
+import com.ambientbytes.observables.ListMutator;
 import com.ambientbytes.observables.LockTool;
 import com.ambientbytes.observables.MutableListSet;
-import com.ambientbytes.observables.ObservableCollections;
-import com.ambientbytes.observables.ObservableList;
 import com.ambientbytes.observables.Trigger;
 
 import java.util.Random;
@@ -23,22 +22,25 @@ public final class MainModel {
     private final Random random = new Random();
     private final IReadWriteMonitor monitor;
     private final ThreadPoolExecutor threadPool;
-    private final ObservableList<IModel> humans;
-    private final ObservableList<IModel> robots;
+    private final ListMutator<IModel> humans;
+    private final ListMutator<IModel> robots;
     private final Trigger unlinker;
     private final IReadOnlyObservableList<IModel> everyone;
 
     public MainModel() {
         this.monitor = LockTool.createReadWriteMonitor(new ReentrantReadWriteLock());
         this.threadPool = new ScheduledThreadPoolExecutor(4);
-        this.humans = ObservableCollections.createObservableList(this.monitor);
-        this.robots = ObservableCollections.createObservableList(this.monitor);
+
+        this.unlinker = new Trigger(monitor);
+        this.humans = new ListMutator<>(monitor);
+        this.robots = new ListMutator<>(monitor);
+        IReadOnlyObservableList<IModel> humansList = ListBuilder.<IModel>create(this.unlinker, this.monitor).mutable(this.humans).build();
+        IReadOnlyObservableList<IModel> robotsList = ListBuilder.<IModel>create(this.unlinker, this.monitor).mutable(this.robots).build();
 
         MutableListSet<IModel> lists = new MutableListSet<IModel>(monitor());
-        lists.add(this.humans.list());
-        lists.add(this.robots.list());
-        this.unlinker = new Trigger(monitor);
-        this.everyone = ListBuilder.<IModel>unlinker(unlinker).merge(lists, monitor).build();
+        lists.add(humansList);
+        lists.add(robotsList);
+        this.everyone = ListBuilder.<IModel>create(unlinker, monitor).merge(lists).build();
     }
 
     public IReadWriteMonitor monitor() {
@@ -57,7 +59,7 @@ public final class MainModel {
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
-                robots.mutator().add(new RobotModel(random.nextInt(18), "Robot " + Integer.toString(random.nextInt(1024 * 4))));
+                robots.add(new RobotModel(random.nextInt(18), "Robot " + Integer.toString(random.nextInt(1024 * 4))));
             }
         });
     }
@@ -66,7 +68,7 @@ public final class MainModel {
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
-                robots.mutator().add(new RobotModel(18 + random.nextInt(200), "Robot " + Integer.toString(random.nextInt(1024 * 4))));
+                robots.add(new RobotModel(18 + random.nextInt(200), "Robot " + Integer.toString(random.nextInt(1024 * 4))));
             }
         });
     }
@@ -75,7 +77,7 @@ public final class MainModel {
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
-                robots.mutator().clear();
+                robots.clear();
             }
         });
     }
@@ -84,7 +86,7 @@ public final class MainModel {
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
-                humans.mutator().add(new HumanModel(random.nextInt(18), random));
+                humans.add(new HumanModel(random.nextInt(18), random));
             }
         });
     }
@@ -93,7 +95,7 @@ public final class MainModel {
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
-                humans.mutator().add(new HumanModel(18 + random.nextInt(100), random));
+                humans.add(new HumanModel(18 + random.nextInt(100), random));
             }
         });
     }
@@ -102,7 +104,7 @@ public final class MainModel {
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
-                humans.mutator().clear();
+                humans.clear();
             }
         });
     }

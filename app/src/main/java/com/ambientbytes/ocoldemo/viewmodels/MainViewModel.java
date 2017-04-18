@@ -87,7 +87,7 @@ public class MainViewModel extends BaseObservable {
 
         this.handler = new Handler();
         this.model = model;
-        this.data = ListBuilder.<IModel>unlinker(model.unlinker()).source(model.everyone(), model.monitor())
+        this.data = ListBuilder.<IModel>create(model.unlinker(), model.monitor()).source(model.everyone())
                 .order(new ImmutableObservableReference<IItemsOrder<IModel>>(order))
                 .map(mapper)
                 .dispatch(dispatcher)
@@ -148,7 +148,7 @@ public class MainViewModel extends BaseObservable {
             ITrigger unlinker,
             IReadWriteMonitor monitor) {
 
-        return ListBuilder.<IModel>unlinker(unlinker).source(source, monitor)
+        return ListBuilder.<IModel>create(unlinker, monitor).source(source)
                 .filter(new ImmutableObservableReference<IItemFilter<IModel>>(filter))
                 .order(new ImmutableObservableReference<IItemsOrder<IModel>>(order))
                 .map(mapper)
